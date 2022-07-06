@@ -1,7 +1,8 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-var multer = require('multer');
+var multer = require("multer");
+const path = require("path");
 var upload = multer();
 const app = express();
 
@@ -13,17 +14,23 @@ db.sequelize.sync();
 // });
 
 app.use(cors());
-
+app.use(
+  "/resources/uploads",
+  express.static(path.join(__dirname, "/resources/uploads"))
+);
 
 // parse requests of content-type - application/json
 app.use(bodyParser.json());
-// app.use(express.json());
+app.use(express.json());
 
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
   next();
 });
 

@@ -1,5 +1,5 @@
 module.exports = (sequelize, Sequelize) => {
-  const Abberation = sequelize.define("Abberation", {
+  const Abberation = sequelize.define("abberation", {
     abberation_id: {
       type: Sequelize.STRING,
     },
@@ -37,7 +37,7 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.STRING,
     },
     signature_reporter: {
-      type: Sequelize.BLOB("long"),
+      type: Sequelize.STRING,
     },
     signature_headsub: {
       type: Sequelize.BLOB("long"),

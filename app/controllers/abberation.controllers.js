@@ -1,12 +1,23 @@
 const db = require("../models");
 const fs = require("fs");
+const url = require("url");
 const Abberation = db.abberations;
 const Op = db.Sequelize.Op;
 
 // Create and Save a new Abberation
 exports.create = (req, res) => {
   // Create a Abberation
-  console.log(req.body)
+  const path =
+    __basedir +
+    "/resources/uploads/" +
+    Date.now() +
+    Math.floor(Math.random() * (1 - 100 + 1) + 1) +
+    ".png";
+  const imgdata = req.body.signature_reporter;
+  const base64Data = imgdata.replace(/^data:([A-Za-z-+/]+);base64,/, "");
+
+  fs.writeFileSync(path, base64Data, { encoding: "base64" });
+
   const abberation = {
     abberation_id: req.body.abberation_id,
     date_abberation: req.body.date_abberation,
@@ -20,22 +31,13 @@ exports.create = (req, res) => {
     facility_name: req.body.facility_name,
     type_abberation: req.body.type_abberation,
     bussiness_process: req.body.bussiness_process,
-    signature_reporter: req.body.signature_reporter
-      ? fs.readFileSync(
-          __basedir +
-            "/resources/uploads/" +
-            req.body.signature_reporter.originalname
-        )
-      : "",
+    signature_reporter: path.replace(__basedir, ''),
   };
 
   // Save Abberation in the database
   Abberation.create(abberation)
     .then((data) => {
-      fs.writeFileSync(
-        __basedir + "/resources/tmp/" + data.signature_reporter.filename,
-        data.signature_reporter
-      );
+      // data.signature_reporter = data.signature_reporter.toString('base64')
       res.send({
         data,
         status: 200,
