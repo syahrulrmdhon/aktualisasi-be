@@ -31,7 +31,9 @@ exports.create = (req, res) => {
     facility_name: req.body.facility_name,
     type_abberation: req.body.type_abberation,
     bussiness_process: req.body.bussiness_process,
-    signature_reporter: path.replace(__basedir, ''),
+    signature_reporter: path.replace(__basedir, ""),
+    date_signature_reporter: req.body.date_signature_reporter,
+    surveillance_group: req.body.surveillance_group,
   };
 
   // Save Abberation in the database
@@ -56,9 +58,30 @@ exports.create = (req, res) => {
 // Retrieve all Abberations from the database.
 exports.findAll = (req, res) => {
   const reporter_name = req.query.reporter_name;
-  let condition = reporter_name
-    ? { reporter_name: { [Op.iLike]: `%${reporter_name}%` } }
-    : null;
+  const years = req.query.year;
+  const group = req.query.group;
+  let condition = {
+    ...(reporter_name && {
+      reporter_name: {
+        [Op.iLike]: `%${reporter_name}%`,
+      },
+    }),
+    ...(years && {
+      date_abberation: db.Sequelize.where(
+        db.Sequelize.fn(
+          "date_part",
+          "year",
+          db.Sequelize.col("date_abberation")
+        ),
+        years
+      ),
+    }),
+    ...(group && {
+      surveillance_group: { 
+        [Op.iLike]: `%${group}%`
+      }
+    })
+  };
   Abberation.findAll({ where: condition })
     .then((data) => {
       res.send(data);
@@ -73,7 +96,7 @@ exports.findAll = (req, res) => {
 
 // Find a single Abberation with an id
 exports.findOne = (req, res) => {
-  Abberation.findAll({ where: { abberation_id: req.params.abberation_id } })
+  Abberation.findAll({ where: { id: req.params.id } })
     .then((data) => {
       res.send(data);
     })
@@ -87,10 +110,10 @@ exports.findOne = (req, res) => {
 
 // Update a Abberation by the id in the request
 exports.update = (req, res) => {
-  const id = req.params.abberation_id;
+  const id = req.params.id;
 
   Abberation.update(req.body, {
-    where: { abberation_id: id },
+    where: { id: id },
   })
     .then((num) => {
       if (num == 1) {
@@ -113,20 +136,38 @@ exports.update = (req, res) => {
 // Delete a Abberation with the specified id in the request
 exports.delete = (req, res) => {
   const id = req.params.id;
-
-  Abberation.destroy({
-    where: { id: id },
-  })
-    .then((num) => {
-      if (num == 1) {
-        res.send({
-          message: "Abberation was deleted successfully!",
-        });
-      } else {
-        res.send({
-          message: `Cannot delete Abberation with id=${id}`,
-        });
+  Abberation.findAll({ where: { id: req.params.id } })
+    .then((data) => {
+      if (data.length > 0) {
+        if (data[0].signature_reporter) {
+          fs.unlinkSync(__basedir + data[0].signature_reporter);
+        }
+        if (data[0].signature_headsub) {
+          fs.unlinkSync(__basedir + data[0].signature_headsub);
+        }
+        if (data[0].signature_auditor) {
+          fs.unlinkSync(__basedir + data[0].signature_auditor);
+        }
+        if (data[0].signature_head_auditor) {
+          fs.unlinkSync(__basedir + data[0].signature_head_auditor);
+        }
+        if (data[0].signature_ceo) {
+          fs.unlinkSync(__basedir + data[0].signature_ceo);
+        }
       }
+      return Abberation.destroy({
+        where: { id: id },
+      }).then((num) => {
+        if (num == 1) {
+          res.send({
+            message: "Abberation was deleted successfully!",
+          });
+        } else {
+          res.send({
+            message: `Cannot delete Abberation with id=${id}`,
+          });
+        }
+      });
     })
     .catch((err) => {
       res.status(500).send({
