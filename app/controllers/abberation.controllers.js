@@ -7,16 +7,20 @@ const Op = db.Sequelize.Op;
 // Create and Save a new Abberation
 exports.create = (req, res) => {
   // Create a Abberation
-  const path =
-    __basedir +
-    "/resources/uploads/" +
-    Date.now() +
-    Math.floor(Math.random() * (1 - 100 + 1) + 1) +
-    ".png";
   const imgdata = req.body.signature_reporter;
-  const base64Data = imgdata.replace(/^data:([A-Za-z-+/]+);base64,/, "");
+  let path;
 
-  fs.writeFileSync(path, base64Data, { encoding: "base64" });
+  if (imgdata) {
+    path =
+      __basedir +
+      "/resources/uploads/" +
+      Date.now() +
+      Math.floor(Math.random() * (1 - 100 + 1) + 1) +
+      ".png";
+    const base64Data = imgdata.replace(/^data:([A-Za-z-+/]+);base64,/, "");
+
+    fs.writeFileSync(path, base64Data, { encoding: "base64" });
+  }
 
   const abberation = {
     abberation_id: req.body.abberation_id,
@@ -31,7 +35,7 @@ exports.create = (req, res) => {
     facility_name: req.body.facility_name,
     type_abberation: req.body.type_abberation,
     bussiness_process: req.body.bussiness_process,
-    signature_reporter: path.replace(__basedir, ""),
+    signature_reporter: imgdata ? path.replace(__basedir, "") : null,
     date_signature_reporter: req.body.date_signature_reporter,
     surveillance_group: req.body.surveillance_group,
   };
@@ -77,10 +81,10 @@ exports.findAll = (req, res) => {
       ),
     }),
     ...(group && {
-      surveillance_group: { 
-        [Op.iLike]: `%${group}%`
-      }
-    })
+      surveillance_group: {
+        [Op.iLike]: `%${group}%`,
+      },
+    }),
   };
   Abberation.findAll({ where: condition })
     .then((data) => {
@@ -111,6 +115,95 @@ exports.findOne = (req, res) => {
 // Update a Abberation by the id in the request
 exports.update = (req, res) => {
   const id = req.params.id;
+  const imgdata = req.body.signature_reporter;
+  const imgdataHeadsub = req.body.signature_headsub;
+  const imgdataAI = req.body.signature_auditor;
+  const imgdataHA = req.body.signature_head_auditor;
+  const imgdataCEO = req.body.signature_ceo;
+  let path;
+  let pathHeadsub;
+  let pathAI;
+  let pathHA;
+  let pathCEO;
+  const isBase64 = (str) => {
+    return str.includes("base64");
+  };
+
+  console.log(isBase64(JSON.stringify(imgdataAI)));
+
+  if (imgdata && isBase64(JSON.stringify(imgdata))) {
+    path =
+      __basedir +
+      "/resources/uploads/" +
+      Date.now() +
+      Math.floor(Math.random() * (1 - 100 + 1) + 1) +
+      ".png";
+    const base64Data = imgdata.replace(/^data:([A-Za-z-+/]+);base64,/, "");
+
+    fs.writeFileSync(path, base64Data, { encoding: "base64" });
+    req.body.signature_reporter = imgdata ? path.replace(__basedir, "") : null;
+  }
+
+  if (imgdataHeadsub && isBase64(JSON.stringify(imgdataHeadsub))) {
+    pathHeadsub =
+      __basedir +
+      "/resources/uploads/HS-" +
+      Date.now() +
+      Math.floor(Math.random() * (1 - 100 + 1) + 1) +
+      ".png";
+    const base64Data = imgdataHeadsub.replace(
+      /^data:([A-Za-z-+/]+);base64,/,
+      ""
+    );
+
+    fs.writeFileSync(pathHeadsub, base64Data, { encoding: "base64" });
+    req.body.signature_headsub = imgdataHeadsub
+      ? pathHeadsub.replace(__basedir, "")
+      : null;
+  }
+
+  if (imgdataAI && isBase64(JSON.stringify(imgdataAI))) {
+    pathAI =
+      __basedir +
+      "/resources/uploads/AI-" +
+      Date.now() +
+      Math.floor(Math.random() * (1 - 100 + 1) + 1) +
+      ".png";
+    const base64Data = imgdataAI.replace(/^data:([A-Za-z-+/]+);base64,/, "");
+
+    fs.writeFileSync(pathAI, base64Data, { encoding: "base64" });
+    req.body.signature_auditor = imgdataAI
+      ? pathAI.replace(__basedir, "")
+      : null;
+  }
+
+  if (imgdataHA && isBase64(JSON.stringify(imgdataHA))) {
+    pathHA =
+      __basedir +
+      "/resources/uploads/HA-" +
+      Date.now() +
+      Math.floor(Math.random() * (1 - 100 + 1) + 1) +
+      ".png";
+    const base64Data = imgdataHA.replace(/^data:([A-Za-z-+/]+);base64,/, "");
+
+    fs.writeFileSync(pathHA, base64Data, { encoding: "base64" });
+    req.body.signature_head_auditor = imgdataHA
+      ? pathHA.replace(__basedir, "")
+      : null;
+  }
+
+  if (imgdataCEO && isBase64(JSON.stringify(imgdataCEO))) {
+    pathCEO =
+      __basedir +
+      "/resources/uploads/CEO-" +
+      Date.now() +
+      Math.floor(Math.random() * (1 - 100 + 1) + 1) +
+      ".png";
+    const base64Data = imgdataCEO.replace(/^data:([A-Za-z-+/]+);base64,/, "");
+
+    fs.writeFileSync(pathCEO, base64Data, { encoding: "base64" });
+    req.body.signature_ceo = imgdataCEO ? pathCEO.replace(__basedir, "") : null;
+  }
 
   Abberation.update(req.body, {
     where: { id: id },
