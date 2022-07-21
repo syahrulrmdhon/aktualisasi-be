@@ -232,19 +232,34 @@ exports.delete = (req, res) => {
   Abberation.findAll({ where: { id: req.params.id } })
     .then((data) => {
       if (data.length > 0) {
-        if (data[0].signature_reporter) {
+        if (
+          data[0].signature_reporter &&
+          fs.existsSync(__basedir + data[0].signature_reporter)
+        ) {
           fs.unlinkSync(__basedir + data[0].signature_reporter);
         }
-        if (data[0].signature_headsub) {
+        if (
+          data[0].signature_headsub &&
+          fs.existsSync(__basedir + data[0].signature_headsub)
+        ) {
           fs.unlinkSync(__basedir + data[0].signature_headsub);
         }
-        if (data[0].signature_auditor) {
+        if (
+          data[0].signature_auditor &&
+          fs.existsSync(__basedir + data[0].signature_auditor)
+        ) {
           fs.unlinkSync(__basedir + data[0].signature_auditor);
         }
-        if (data[0].signature_head_auditor) {
+        if (
+          data[0].signature_head_auditor &&
+          fs.existsSync(__basedir + data[0].signature_head_auditor)
+        ) {
           fs.unlinkSync(__basedir + data[0].signature_head_auditor);
         }
-        if (data[0].signature_ceo) {
+        if (
+          data[0].signature_ceo &&
+          fs.existsSync(__basedir + data[0].signature_ceo)
+        ) {
           fs.unlinkSync(__basedir + data[0].signature_ceo);
         }
       }
