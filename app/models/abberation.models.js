@@ -40,13 +40,13 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.STRING,
     },
     signature_reporter: {
-      type: Sequelize.STRING,
+      type: Sequelize.JSON,
     },
     date_signature_reporter: {
       type: Sequelize.DATE,
     },
     signature_headsub: {
-      type: Sequelize.STRING,
+      type: Sequelize.JSON,
     },
     name_headsub: {
       type: Sequelize.STRING,
@@ -55,13 +55,16 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.DATE,
     },
     signature_auditor: {
-      type: Sequelize.STRING,
+      type: Sequelize.JSON,
     },
     date_signature_auditor: {
       type: Sequelize.DATE,
     },
     signature_head_auditor: {
-      type: Sequelize.STRING,
+      type: Sequelize.JSON,
+    },
+    notes_headsub: {
+      type: Sequelize.STRING(10000),
     },
     name_head_auditor: {
       type: Sequelize.STRING,
@@ -70,7 +73,7 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.DATE,
     },
     signature_ceo: {
-      type: Sequelize.STRING,
+      type: Sequelize.JSON,
     },
     name_ceo: {
       type: Sequelize.STRING,

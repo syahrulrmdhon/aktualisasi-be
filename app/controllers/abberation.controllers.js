@@ -129,8 +129,6 @@ exports.update = (req, res) => {
     return str.includes("base64");
   };
 
-  console.log(isBase64(JSON.stringify(imgdataAI)));
-
   if (imgdata && isBase64(JSON.stringify(imgdata))) {
     path =
       __basedir +
