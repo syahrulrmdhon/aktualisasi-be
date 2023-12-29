@@ -3,14 +3,15 @@ module.exports = (app) => {
 
   var router = require("express").Router();
   const upload = require("../middleware/upload");
+  const { authJwt } = require("../middleware");
 
   // Create a new Order
-  router.post("/", upload.single("signature_reporter"), (req, res) => {
+  router.post("/", [authJwt.verifyToken, upload.single("signature_reporter")], (req, res) => {
     abberation.create(req, res);
   });
 
   // Retrieve all Orders
-  router.get("/", abberation.findAll);
+  router.get("/", [authJwt.verifyToken], abberation.findAll);
 
   // Retrieve all Signed
   router.get("/signed", abberation.findAllSigned);

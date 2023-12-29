@@ -18,10 +18,10 @@
 
 module.exports = {
   HOST: "localhost",
-  USER: "ubuntu",
-  PASSWORD: "123",
+  USER: "root",
+  PASSWORD: "",
   DB: "aktualisasi_db",
-  dialect: "postgres",
+  dialect: "mysql",
   pool: {
     max: 5,
     min: 0,

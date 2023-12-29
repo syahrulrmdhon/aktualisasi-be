@@ -41,11 +41,11 @@ function initial() {
   });
 }
 global.__basedir = __dirname;
-db.sequelize.sync();
-// db.sequelize.sync({ force: true }).then(() => {
-//   console.log("Drop and Resync Db");
-//   initial();
-// });
+// db.sequelize.sync();
+db.sequelize.sync({ force: true }).then(() => {
+  console.log("Drop and Resync Db");
+  initial();
+});
 
 app.use(cors());
 app.use(

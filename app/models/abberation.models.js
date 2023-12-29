@@ -10,22 +10,22 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.DATE,
     },
     detail_abberation: {
-      type: Sequelize.STRING(10000),
+      type: Sequelize.STRING(1000),
     },
     corrective_action: {
-      type: Sequelize.STRING(10000),
+      type: Sequelize.STRING(1000),
     },
     cause_analysis: {
-      type: Sequelize.STRING(10000),
+      type: Sequelize.STRING(1000),
     },
     preventive_measure: {
-      type: Sequelize.STRING(10000),
+      type: Sequelize.STRING(1000),
     },
     reporter_name: {
       type: Sequelize.STRING,
     },
     action_recomendation: {
-      type: Sequelize.STRING(10000),
+      type: Sequelize.STRING(1000),
     },
     internal_auditor: {
       type: Sequelize.STRING,
@@ -64,7 +64,7 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.JSON,
     },
     notes_headsub: {
-      type: Sequelize.STRING(10000),
+      type: Sequelize.STRING(1000),
     },
     name_head_auditor: {
       type: Sequelize.STRING,
